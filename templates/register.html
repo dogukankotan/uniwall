@@ -1,0 +1,67 @@
+{% extends 'login.html' %}
+{% block auth %}
+    <div class="container">
+
+<div class="row">
+    <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
+		<form role="form" method="post">
+            {% csrf_token %}
+			<h2>Uniwall - Üye Ol<small>{{ form.non_field_errors }}</small></h2>
+        {% if error %}<div class="alert alert-danger" role="alert">
+  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+  <span class="sr-only">Hata:</span>
+ {% if error.first_name %}<li> Adınız Eksik</li>{% endif %}
+ {% if error.last_name %}<li> Soyadınız Eksik</li>{% endif %}
+ {% if error.email %}<li> Eposta Adresiniz Eksik</li>{% endif %}
+ {% if error.school %}<li> Okulunuzu seçmediniz</li>{% endif %}
+ {% if error.username %}<li> Kullanıcı adınız Eksik</li>{% endif %}
+            {% if error.password %}<li> Şifreniz boş olmamalıdır</li>{% endif %}
+
+
+</div> {% endif %}
+			<div class="row">
+				<div class="col-xs-12 col-sm-6 col-md-6">
+					<div class="form-group">
+
+                        <input type="text" name="first_name" id="first_name" class="form-control input-lg" placeholder="İsim" tabindex="2">
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-6 col-md-6">
+					<div class="form-group">
+						<input type="text" name="last_name" id="last_name" class="form-control input-lg" placeholder="Soyad" tabindex="2">
+					</div>
+				</div>
+            </div>
+            <div class="row">
+				<div class="col-xs-12 col-sm-6 col-md-6">
+					<div class="form-group">
+                        <select name="school" id="school" class="form-control input-lg" placeholder="Okul İsmi" tabindex="1">
+                            {% for school in sc %}
+                            <option value="{{ school }}">{{ school }}</option>
+                            {% endfor %}
+                        </select>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-6 col-md-6">
+					<div class="form-group">
+						<input type="text" name="username" id="username" class="form-control input-lg" placeholder="Kullanıcı Adı" tabindex="2">
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<input type="email" name="email" id="email" class="form-control input-lg" placeholder="E-posta Adresi" tabindex="4">
+			</div>
+            <div class="form-group">
+						<input type="password" name="password" id="password" class="form-control input-lg" placeholder="Şifre" tabindex="5">
+					</div>
+
+			<hr class="colorgraph">
+			<div class="row">
+				<div class="col-xs-12 col-md-6"><input type="submit" value="Üye Ol" class="btn btn-primary btn-block btn-lg" tabindex="7"></div>
+				<div class="col-xs-12 col-md-6"><a href="{% url 'login' %}" class="btn btn-success btn-block btn-lg">Giriş Yap</a></div>
+			</div>
+		</form>
+	</div>
+</div>
+</div>
+{% endblock %}

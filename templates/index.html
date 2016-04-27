@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container">
+        <div class="iconcontainer">
+            <div class="row main-area">
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                    <div class="iconbox">
+                        <div class="iconbox-icon">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </div>
+                        <div class="featureinfo">
+                            <h1 class="text-center">Paylaşımlar</h1>
+                            <h5 class="text-center">{{ share_center }}</h5>
+
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <form action="{% url 'entry' %}" accept-charset="UTF-8" method="POST">
+                                        {% csrf_token %}
+                                        <textarea id="entry" class="form-control counted" name="content"
+                                                  placeholder="Aklından neler geçiyor?" rows="4"></textarea>
+                                        <h5 class="pull-left" id="counter">100 karakter kaldı.</h5>
+                                        <button class="btn btn-info" type="submit">Paylaş</button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% for entry in entries %}
+                                <div class="share-area thumbnail">
+                                    <div class="label label-primary">
+                                        <i>{{ entry.user }}</i> bir yazı
+                                        paylaştı.
+                                    </div>
+                                    <div class="label label-danger"><em>Zaman:{{ entry.time }}</em></div>
+
+                                    <div class="card-block">
+                                        <p>{{ entry.content }}</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                    <div class="iconbox">
+                        <div class="iconbox-icon">
+                            <span class="glyphicon glyphicon-picture"></span>
+                        </div>
+                        <div class="featureinfo">
+                            <h1 class="text-center">Fotoğraflar</h1>
+                            <h5 class="text-center">{{ share_center }}</h5>
+
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+
+                                    <form action="{% url 'picture' %}" method="post" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <div class="form-inline text-center">
+                                            <h4>Lütfen paylaşmak istediğiniz fotoğrafınızı seçiniz</h4>
+
+                                            <div class="form-group">
+                                                <input type="file" accept="image/*" name="content" value=""
+                                                       id="picture">
+                                            </div>
+                                            <button type="submit" class="btn btn-info" id="js-upload-submit">Paylaş
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+
+                            {% for picture in pictures %}
+                                <div class="share-area thumbnail">
+                                    <div class="label label-primary">
+                                        <i>{{ picture.user }}</i> bir fotoğraf
+                                        paylaştı.
+                                    </div>
+                                    <div class="label label-danger"><em>Zaman:{{ picture.time }}</em></div>
+
+                                    <div class="card-block">
+                                        <img src="{{ picture.content.url }}">
+                                    </div>
+                                </div>
+                            {% endfor %}
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                    <div class="iconbox">
+                        <div class="iconbox-icon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </div>
+                        <div class="featureinfo">
+                            <h1 class="text-center">Etkinlikler</h1>
+                            <h5 class="text-center">{{ share_center }}</h5>
+
+                            <div class="panel panel-default">
+                                <div class="panel-body text-center">
+                                    <button class="btn btn-info text-center" data-toggle="modal"
+                                            data-target="#eventModal">Etkinlik Yarat
+                                    </button>
+                                </div>
+                            </div>
+
+                            {% for event in events %}
+                                <div class="share-area thumbnail">
+                                    <div class="label label-primary">
+                                        <i>{{ event.organizator }}</i> bir etkinlik
+                                        paylaştı.
+                                    </div>
+                                    <div class="label label-danger"><em>Zaman:{{ event.date }} {{ event.time }}</em>
+                                    </div>
+
+                                    <div class="card-block">
+
+                                        Etkinlik Başlığı: <strong><i>{{ event.title }}</strong></i> <a href="#"
+                                                                                                       data-toggle="modal"
+                                                                                                       data-target="#event{{ event.id }}">Etkinlik
+                                        detayı için tıklayın</a>
+                                         <form action="/join_event/{{ event.id }}/" method="post">
+                                             {% csrf_token %}
+                                        <button type="submit" class="btn btn-xs">Etkinliğe Katıl</button>
+                                             </form>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div id="eventModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Etkinlik Yarat</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal col-sm-7 col-sm-offset-2" action="{% url 'event' %}" method="post">
+                        {% csrf_token %}
+                        <div class="form-group registration-date">
+                            <div class="input-group registration-date-time">
+                                        <span class="input-group-addon" id="basic-addon1"><span
+                                                class="glyphicon glyphicon-calendar" aria-hidden="true"></span></span>
+                                <input class="form-control" name="event_date" id="event-date"
+                                       type="date" value="{{ event_datetoday }}">
+                                        <span class="input-group-addon" id="basic-addon1"><span
+                                                class="glyphicon glyphicon-time" aria-hidden="true"></span></span>
+                                <input class="form-control" name="event_time" id="event-time"
+                                       type="time" value="{{ event_timetoday }}">
+                            </div>
+                        </div>
+                        <input class="form-control" name="event_title" id="event-title"
+                               type="text" placeholder="Etkinlik Başlığı">
+                                <textarea id="event_content" class="form-control" name="event_content"
+                                          placeholder="Etkinlik detaylarını buraya yazınız..." rows="4"></textarea>
+                        <button type="submit" class="btn btn-info" id="js-upload-submit">Paylaş
+                        </button>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Vazgeç</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+    {% for event in events %}
+        <div id="event{{ event.id }}" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Etkinlik: {{ event.title }}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>Etkinlik Detayları</strong></p>
+
+                        <p>{{ event.content }}</p>
+
+                        <p><strong>Etkinlik Sahibi</strong></p>
+
+                        <p>{{ event.organizator.user.first_name }} {{ event.organizator.user.last_name }}</p>
+
+                        <p><strong>Etkinlik Zamanı</strong></p>
+
+                        <p>{{ event.date }} {{ event.time }}</p>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <form action="/join_event/{{ event.id }}/" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-info">Etkinliğe Katıl</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Vazgeç</button>
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    {% endfor %}
+{% endblock %}
